@@ -35,6 +35,9 @@
     "scripts": {
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "touch -a database/database.sqlite",
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
+            "@php artisan key:generate --ansi",
             "@php artisan package:discover --ansi"
         ],
         "post-update-cmd": [
