@@ -30,32 +30,15 @@ class CarDeliver extends Command
     public function handle()
     {
         $car_value = $this->ask('Car value or Id?');
-
-        $carQuery = Car::whereNull('parent_id');
-
-        if(is_numeric($car_value)){
-            $carQuery->whereId($car_value);
-        }else{
-            $carQuery->whereValue($car_value);
-        }
+        $car = Car::whereNull('parent_id')->findByFieldOrId($car_value, 'value');
         
-        $car = $carQuery->first();
-
         if(! $car) {
             $this->error('Car does not exist.');
             return;
         }
 
         $model_value = $this->ask('Model value or Id?');
-        $modelQuery = $car->models();
-
-        if(is_numeric($model_value)){
-            $modelQuery->whereId($model_value);
-        }else{
-            $modelQuery->whereValue($model_value);
-        }
-        
-        $model = $modelQuery->first();
+        $model = $car->models()->findByFieldOrId($model_value, 'value');
 
         if(! $model) {
             $this->error('The model does not exist.');
@@ -63,16 +46,7 @@ class CarDeliver extends Command
         }
 
         $customer_name = $this->ask('Customer name or Id?');
-
-        $query = Customer::query();
-
-        if(is_numeric($customer_name)){
-            $query->whereId($customer_name);
-        }else{
-            $query->whereValue($customer_name);
-        }
-        
-        $customer = $query->first();
+        $customer = Customer::findByFieldOrId($customer_name, 'name');
 
         if(! $customer) {
             $this->error('Customer does not exist.');

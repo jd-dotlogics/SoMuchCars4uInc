@@ -29,16 +29,7 @@ class AddCarModel extends Command
     public function handle()
     {
         $car_value = $this->ask('Car value or Id?');
-
-        $carQuery = Car::whereNull('parent_id');
-
-        if(is_numeric($car_value)){
-            $carQuery->whereId($car_value);
-        }else{
-            $carQuery->whereValue($car_value);
-        }
-        
-        $car = $carQuery->first();
+        $car = Car::whereNull('parent_id')->findByFieldOrId($car_value, 'value');
 
         if(! $car) {
             $this->error('Car does not exist.');
